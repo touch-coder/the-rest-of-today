@@ -1,0 +1,16 @@
+{
+  "id": "./",
+  "name": "眠记 · 你的睡眠手账",
+  "short_name": "眠记",
+  "description": "记录夜间睡眠、午休和补觉，查看自己的睡眠节奏。",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f7fb",
+  "theme_color": "#f6f7fb",
+  "icons": [
+    { "src": "./assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f7fb">
+  <meta name="description" content="记录每一段休息，看见自己的睡眠节奏。离线可用的个人睡眠手账。">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./assets/icon-192.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <title>眠记 · 你的睡眠手账</title>
+</head>
+<body>
+  <div id="app">
+    <section style="max-width:520px;margin:15vh auto;padding:28px;font-family:system-ui,sans-serif;line-height:1.9;color:#51465f;background:white;border:1px solid #e8def3;border-radius:16px">
+      <h1 style="font-size:24px;margin:0 0 12px">眠记 · 正在准备手账</h1>
+      <p id="boot-message">正在加载页面资源。如果等待后仍停留在这里，请确认通过网页服务器访问，或重新加载。</p>
+      <p><a href="http://localhost:5173" style="color:#7660ad;text-decoration:underline">打开本机网页预览</a></p>
+      <noscript>请启用浏览器 JavaScript 后使用眠记。</noscript>
+    </section>
+  </div>
+  <dialog id="record-dialog" aria-labelledby="record-title"></dialog>
+  <dialog id="import-dialog" aria-labelledby="import-title"></dialog>
+  <dialog id="confirm-dialog" aria-labelledby="confirm-title"></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script>
+    if (location.protocol === 'file:') {
+      document.getElementById('boot-message').textContent = '你正在直接打开 HTML 文件。浏览器会阻止本应用的模块加载，请先在项目目录运行 npm run dev，再打开 http://localhost:5173。';
+    }
+    window.addEventListener('error', function () {
+      var message = document.getElementById('boot-message');
+      if (message && location.protocol !== 'file:') message.textContent = '页面资源加载失败。请确认开发服务器正在运行，然后刷新页面；首次打开需要联网。';
+    }, true);
+  </script>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

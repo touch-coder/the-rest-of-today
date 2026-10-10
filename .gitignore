@@ -1,0 +1,30 @@
+# Generated files
+/dist/
+/artifacts/
+/*.zip
+node_modules/
+.DS_Store
+
+# Local tools and credentials
+.tools/
+.env
+.env.*
+!.env.example
+.aws/
+.codex/
+.agents/
+
+# Personal sleep exports (only the application manifest is tracked as JSON)
+*.json
+!package.json
+!package-lock.json
+*.csv
+*.tsv
+*.xlsx
+*.txt
+/backups/
+/exports/
+
+# Local collaboration records can contain personal context and absolute paths
+PROJECT_DOC.md
+CONVERSATION_CONTEXT.md
