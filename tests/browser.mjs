@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { mkdir, readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
-import { today, addDays, createState, saveRecord, confirmDay, backup } from '../src/domain.js';
+import { today, addDays, createState, saveRecord, confirmDay, backup } from '../shared/domain.js';
 const modulePath=process.env.PLAYWRIGHT_MODULE||'/Users/mac/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
 const {chromium}=await import(pathToFileURL(modulePath).href);
 const browser=await chromium.launch({executablePath:process.env.CHROME_EXECUTABLE||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
@@ -70,8 +70,12 @@ try{
   console.log('PASS JSON download, import preview and merge');
 
   await page.locator('.mobile-nav [data-page="report"]').click();
+  assert.equal(await page.locator('h1').textContent(),'睡眠总结');
+  assert.equal(await page.locator('[data-action="report-week"]').textContent(),'每周总结');
   await page.locator('[data-action="report-month"]').click();
-  assert.equal(await page.locator('.stats-grid .stat-card').count(),4);
+  assert.equal(await page.locator('[data-action="report-month"]').textContent(),'每月总结');
+  assert.equal(await page.locator('.stats-grid .stat-card').count(),5);
+  assert.match(await page.locator('[data-stat="recorded-days"] strong').textContent(),/^3\s*天$/);
   await page.locator('.mobile-nav [data-page="calendar"]').click();
   assert.ok(await page.locator('.calendar-day').count()>=28);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false);
@@ -103,7 +107,7 @@ try{
   console.log('PASS offline reload, edit and persistent save; no browser errors');
 
   const fallbackPage=await browser.newPage();
-  await fallbackPage.goto(new URL('../index.html',import.meta.url).href);
+  await fallbackPage.goto(new URL('../web/index.html',import.meta.url).href);
   assert.match(await fallbackPage.locator('#boot-message').textContent(),/直接打开 HTML/);
   await fallbackPage.close();
   const corruptContext=await browser.newContext({viewport:{width:360,height:800}});

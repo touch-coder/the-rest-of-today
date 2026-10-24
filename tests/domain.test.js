@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createState, today, validDate, weekRange, monthRange, duration, saveRecord, deleteRecord, dayStatus, confirmDay, setGoal, goalForDate, summarize, backup, parseBackup, mergeBackup, exportCsv, validateState } from '../src/domain.js';
+import { createState, today, validDate, weekRange, monthRange, duration, saveRecord, deleteRecord, dayStatus, confirmDay, setGoal, goalForDate, summarize, backup, parseBackup, mergeBackup, exportCsv, validateState } from '../shared/domain.js';
 
 const NOW = new Date('2026-10-10T04:00:00Z');
 const initial = () => ({ ...createState(NOW), startDate: '2026-10-04' });
@@ -64,13 +64,13 @@ test('formal statistics exclude missing/pending but include explicit zero, clip 
   state=saveRecord(state,night('2026-10-06'));
   state=saveRecord(state,nap('2026-10-07'));
   const stats=summarize(state,weekRange('2026-10-10'),'2026-10-10');
-  assert.equal(stats.days,7);assert.equal(stats.confirmed,2);assert.equal(stats.pending,1);assert.equal(stats.missing,4);
+  assert.equal(stats.days,7);assert.equal(stats.recordedDays,3);assert.equal(stats.confirmed,2);assert.equal(stats.pending,1);assert.equal(stats.missing,4);
   assert.equal(stats.total,480);assert.equal(stats.average,240);assert.equal(stats.achievementRate,.5);assert.equal(stats.completionRate,2/7);
   assert.equal(stats.totals.nap,0);assert.equal(stats.difference,-480);
   assert.equal(summarize(state,weekRange('2026-10-04'),'2026-10-06').days,3);
   assert.equal(summarize({...state,startDate:'2026-10-08'},weekRange('2026-10-10'),'2026-10-10').days,3);
   const empty=summarize(state,weekRange('2026-10-17'),'2026-10-10');
-  assert.equal(empty.days,0);assert.equal(empty.average,null);assert.equal(empty.completionRate,null);
+  assert.equal(empty.days,0);assert.equal(empty.recordedDays,0);assert.equal(empty.average,null);assert.equal(empty.completionRate,null);
 });
 
 test('goal history applies on effective dates; historical baseline remains 8h',()=>{

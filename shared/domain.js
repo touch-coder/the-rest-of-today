@@ -131,14 +131,16 @@ export function summarize(state, range, currentDate = today()) {
   const dates = daysBetween(start, end);
   const totals = { night: 0, nap: 0, extra: 0 };
   const sleepTimes = [], wakeTimes = [];
-  let confirmed = 0, missing = 0, pending = 0, achieved = 0, goalMinutes = 0;
+  let confirmed = 0, missing = 0, pending = 0, recordedDays = 0, achieved = 0, goalMinutes = 0;
   for (const date of dates) {
+    const dayRecords = recordsForDate(state, date);
+    if (dayRecords.length) recordedDays++;
     const status = dayStatus(state, date, currentDate);
     if (status === 'missing') { missing++; continue; }
     if (status === 'pending') { pending++; continue; }
     confirmed++;
     let total = 0;
-    for (const record of recordsForDate(state, date)) {
+    for (const record of dayRecords) {
       const minutes = duration(record);
       totals[record.type] += minutes; total += minutes;
       if (record.type === 'night') {
@@ -153,7 +155,7 @@ export function summarize(state, range, currentDate = today()) {
     if (total >= goal) achieved++;
   }
   const total = Object.values(totals).reduce((a, b) => a + b, 0);
-  return { start, end, days: dates.length, confirmed, missing, pending, achieved, total, totals, average: confirmed ? total / confirmed : null, completionRate: dates.length ? confirmed / dates.length : null, achievementRate: confirmed ? achieved / confirmed : null, goalMinutes, difference: confirmed ? total - goalMinutes : null, sleep: rhythm(sleepTimes), wake: rhythm(wakeTimes) };
+  return { start, end, days: dates.length, recordedDays, confirmed, missing, pending, achieved, total, totals, average: confirmed ? total / confirmed : null, completionRate: dates.length ? confirmed / dates.length : null, achievementRate: confirmed ? achieved / confirmed : null, goalMinutes, difference: confirmed ? total - goalMinutes : null, sleep: rhythm(sleepTimes), wake: rhythm(wakeTimes) };
 }
 
 export function validateState(input) {

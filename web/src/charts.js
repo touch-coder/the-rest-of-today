@@ -1,4 +1,4 @@
-import { TYPES, daysBetween, recordsForDate, duration, goalForDate, dayStatus, formatClock } from './domain.js';
+import { TYPES, daysBetween, recordsForDate, duration, goalForDate, dayStatus, formatClock } from '../../shared/domain.js';
 export const COLORS = { night: '#8175ce', nap: '#e5ae62', extra: '#78b8a5' };
 const escape = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 
