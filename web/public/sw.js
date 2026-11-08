@@ -1,7 +1,7 @@
-const CACHE = 'the-rest-of-today-v1.2.0';
+const CACHE = 'the-rest-of-today-v1.3.0';
 const ASSETS = ['./', './index.html', './styles.css', './src/app.js', './src/storage.js', './src/charts.js', './shared/domain.js', './manifest.webmanifest', './assets/icon.svg', './assets/icon-192.png', './assets/icon-512.png'];
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', event => {
   event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => (key.startsWith('sleeping-table-') || key.startsWith('the-rest-of-today-')) && key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim()));

@@ -328,7 +328,7 @@ async function start() {
   }
   render();
   if('serviceWorker' in navigator&&window.isSecureContext){
-  navigator.serviceWorker.register(new URL('../sw.js',import.meta.url),{scope:new URL('../',import.meta.url).pathname}).then(registration=>{
+  navigator.serviceWorker.register(new URL('../sw.js',import.meta.url),{scope:new URL('../',import.meta.url).pathname,updateViaCache:'none'}).then(registration=>{
     if(registration.waiting){waitingWorker=registration.waiting;render();}
     registration.addEventListener('updatefound',()=>{
       const worker=registration.installing;
