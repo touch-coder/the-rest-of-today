@@ -2,7 +2,7 @@
 
 记录夜间睡眠、午休和补觉，查看每日图表、缺失月历及睡眠总结。网页版本数据保存在当前浏览器，首次加载并完成离线缓存后可断网记录。
 
-仓库：[touch-coder/the-rest-of-today](https://github.com/touch-coder/the-rest-of-today)。网页部署地址以 GitHub Pages 当前设置为准；仓库重命名前的旧 Pages 地址不再作为权威入口。
+仓库：[touch-coder/the-rest-of-today](https://github.com/touch-coder/the-rest-of-today)。网页入口：[GitHub Pages](https://touch-coder.github.io/the-rest-of-today/)。仓库重命名前的旧 Pages 地址不再作为权威入口。
 
 ## 移动应用进度
 
@@ -25,7 +25,7 @@ npm run mobile:sync
 npm run dev
 ```
 
-电脑打开 `http://localhost:5173`。手机可在同一 Wi-Fi 下打开 `http://电脑的局域网IP:5173`，但普通 HTTP 局域网地址不支持离线安装；正式使用请部署到 HTTPS。可通过 `PORT=8080 npm run dev` 指定端口。
+电脑打开 `http://localhost:5173`。默认只监听本机；手机同一 Wi-Fi 预览需使用 `HOST=0.0.0.0 npm run dev`，再打开 `http://电脑的局域网IP:5173`。普通 HTTP 局域网地址不支持离线安装；正式使用请部署到 HTTPS。可通过 `PORT=8080 npm run dev` 指定端口。
 
 ## 使用流程
 
@@ -57,6 +57,8 @@ npm run check
 npm test
 ```
 
+`npm test` 包含开发服务器预缓存资源检查，以及 GitHub Pages 子目录下的构建模块路径检查；这些检查会运行网页构建并重新生成 `dist/`。
+
 可选浏览器集成测试使用 Playwright 和 Chrome；启动开发服务器后运行：
 
 ```sh
@@ -64,6 +66,14 @@ PLAYWRIGHT_MODULE=/绝对路径/playwright/index.mjs CHROME_EXECUTABLE=/绝对�
 ```
 
 脚本使用隔离的临时浏览器上下文，不访问用户浏览器数据。测试生成的界面截图位于 `artifacts/`，截图数据为测试样本。
+
+旧缓存升级、子目录部署和离线更新回归测试：
+
+```sh
+PLAYWRIGHT_MODULE=/绝对路径/playwright/index.mjs CHROME_EXECUTABLE=/绝对路径/Chrome npm run test:update
+```
+
+该测试启动临时服务器，先安装旧版缓存，再升级当前构建，检查“睡眠总结”“每周总结”“每月总结”“有记录天数”、已保存数据、离线刷新，以及不修改 Service Worker 时的源码更新。
 
 ## GitHub Pages 部署（推荐）
 
@@ -76,7 +86,7 @@ PLAYWRIGHT_MODULE=/绝对路径/playwright/index.mjs CHROME_EXECUTABLE=/绝对�
 
 `.gitignore` 排除了构建产物、测试截图、睡眠 JSON/CSV 备份、环境文件和本地协作记录。提交前仍应检查文件列表。睡眠记录保存在浏览器中，不会随源码推送；迁移到线上地址前导出 JSON，再在新地址导入。
 
-部署使用 GitHub Actions 的内置短期令牌；不需要保存个人访问令牌。每次网页资源更新要修改 `sw.js` 缓存版本，以便已有设备收到更新提示。
+部署使用 GitHub Actions 的内置短期令牌；不需要保存个人访问令牌。安装或升级 Service Worker 时会预缓存应用资源；升级准备好后显示“更新应用”，保存编辑后再确认更新。联网加载会重新验证应用资源，断网时回退到成功缓存的副本，因此仅修改 JS/CSS 也不会一直卡在旧资源上。
 
 ## 其他 HTTPS 部署
 
@@ -88,7 +98,7 @@ npm run build
 
 线上地址首次打开后，到“设置与备份”确认“离线资源已就绪”，再添加到手机主屏幕。iPhone 使用 Safari 分享菜单；Android 使用浏览器的安装入口。
 
-每次更新程序资源应修改 `sw.js` 的缓存版本号，重新构建部署。已有用户会看到更新提示，确认后重新加载；睡眠数据保留在浏览器存储中。
+发布前运行 `npm run build`，上传最新 `dist/`；不要使用历史 `sleeping-table-web.zip`。移动端的 Vite 构建也使用 `dist/`，因此执行过移动端构建后，网页部署前必须重新运行网页构建。Service Worker 缓存按应用地址隔离，睡眠数据仍独立保存在浏览器存储中。
 
 当前发布方案采用 GitHub Pages，线上地址以部署成功后的 Pages 输出为准。开发预览不是永久线上地址。
 
@@ -97,4 +107,4 @@ npm run build
 - 无账号、无设备同步、不上传睡眠数据，不使用在线 AI。
 - 每个设备、浏览器、网址拥有独立存储。清除网站数据、更换地址或浏览器都可能失去访问；用 JSON 备份迁移。
 - 浏览器存储读取失败时不会自动覆盖原始数据；设置页提供原始数据导出及备份恢复入口。
-- Chromium 浏览器集成流程曾在首版验证；本次源码迁移后需要重跑浏览器测试。iOS/Android 原生工程尚未生成；依赖下载和对应平台工具链可用后，再执行 `npm install`、`npm run mobile:sync` 并分别验证原生构建。
+- 2026-11-17 已重跑 Chromium 网页交互、旧缓存升级、Pages 子目录和离线回归；iOS/Android 平台工程、安装包和真机功能仍未验证，网页测试不能替代原生验证。

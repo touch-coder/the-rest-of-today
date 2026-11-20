@@ -11,6 +11,7 @@
     "mobile:ios": "npm run mobile:sync && npx cap open ios",
     "mobile:android": "npm run mobile:sync && npx cap open android",
     "test": "node --test tests/*.test.js",
+    "test:update": "npm run build && node tests/update.mjs",
     "check": "node --check web/src/app.js && node --check web/src/storage.js && node --check web/src/charts.js && node --check shared/domain.js && node --check web/public/sw.js && node --check app/src/native-storage.js && node --check app/src/native-files.js && node --check app/src/notifications.js && node --check scripts/mobile-sync.mjs"
   },
   "dependencies": {
